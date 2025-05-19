@@ -33,6 +33,7 @@ export class BookController {
   }
 
   //TODO add author validation.
+  //TODO move validation to service layer.
   @Post()
   create(@Body() createBookDto: CreateBookDto): Promise<Book> {
     if (createBookDto?.name !== undefined && createBookDto?.name !== '') {
@@ -46,6 +47,7 @@ export class BookController {
     return this.bookService.remove(id);
   }
 
+  //TODO move validation to service layer.
   @Put(':id')
   async update(
     @Param('id') id: number,
