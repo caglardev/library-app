@@ -64,8 +64,8 @@ You can insert some data manually (example init/create-tables.sql).
 Create an .env file in root folder and fill these values:
 
 ```
-PORT = 3000
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
-DB_NAME = 'librarydb'
+PORT =
+DB_USER =
+DB_PASSWORD =
+DB_NAME =
 ```
