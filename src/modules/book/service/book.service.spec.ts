@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BookService } from './books.service';
+import { BookService } from './book.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Book } from './book.entity';
+import { Book } from '../entity/book.entity';
 import { Repository } from 'typeorm';
-import { Author } from './author.entity';
+import { Author } from '../entity/author.entity';
 
 //TODO: add tests for edge cases.
 describe('BookService', () => {

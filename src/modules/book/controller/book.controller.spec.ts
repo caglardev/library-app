@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { BookController } from './books.controller';
-import { BookService } from './books.service';
-import { CreateBookDto } from './dto/create-book.dto';
+import { BookController } from './book.controller';
+import { BookService } from '../service/book.service';
+import { CreateBookDto } from '../dto/create-book.dto';
 
 const createBookDto: CreateBookDto = {
   name: 'book 1',

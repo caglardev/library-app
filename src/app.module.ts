@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BooksModule } from './books/books.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Book } from './books/book.entity';
-import { Author } from './books/author.entity';
+import { Book } from './modules/book/entity/book.entity';
+import { Author } from './modules/book/entity/author.entity';
+import { BookModule } from './modules/book/book.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { Author } from './books/author.entity';
       entities: [Book, Author],
       synchronize: true,
     }),
-    BooksModule,
+    BookModule,
   ],
 })
 export class AppModule {}
