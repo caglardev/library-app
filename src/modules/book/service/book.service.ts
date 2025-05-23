@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateBookDto } from '../dto/create-book.dto';
 import { Author } from '../../author/entity/author.entity';
 import { UpdateBookDto } from '../dto/update-book.dto';
+import { BookBuilder } from '../builder/book.builder';
 
 @Injectable()
 export class BookService {
@@ -27,8 +28,7 @@ export class BookService {
   }
 
   async create(createBookDto: CreateBookDto): Promise<Book> {
-    const book = new Book();
-    book.name = createBookDto.name;
+    const bookBuilder = new BookBuilder().setName(createBookDto.name);
 
     // Parse authorIds if it's a string
     let authorIds: number[] = [];
@@ -43,8 +43,9 @@ export class BookService {
 
     if (authorIds.length > 0) {
       const authors = await this.authorsRepository.findByIds(authorIds);
-      book.authors = authors;
+      bookBuilder.setAuthors(authors);
     }
+    const book = bookBuilder.getBook();
     return this.booksRepository.save(book);
   }
 
@@ -55,16 +56,21 @@ export class BookService {
   async update(id: number, updateBookDto: UpdateBookDto): Promise<void> {
     const book = await this.booksRepository.findOne({
       where: { id },
-      relations: ['authors'], // Load the authors relation
+      relations: ['authors'],
     });
 
     if (!book) {
       throw new Error('Book not found');
     }
 
+    const bookBuilder = new BookBuilder()
+      .setId(book.id)
+      .setName(book.name)
+      .setAuthors(book.authors);
+
     // Update the book's properties
     if (updateBookDto.name) {
-      book.name = updateBookDto.name;
+      bookBuilder.setName(updateBookDto.name);
     }
 
     // Update the authors if authorIds are provided
@@ -75,6 +81,6 @@ export class BookService {
       book.authors = authors;
     }
 
-    await this.booksRepository.save(book);
+    await this.booksRepository.save(bookBuilder.getBook());
   }
 }
