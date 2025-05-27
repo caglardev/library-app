@@ -5,7 +5,7 @@ interface IBookBuilder {
   book: Book;
   setId(id: number): this;
   setName(name: string): this;
-  setAuthors(authors: Author[]): this;
+  setAuthor(author: Author): this;
   getBook(): Book;
 }
 
@@ -26,8 +26,8 @@ export class BookBuilder implements IBookBuilder {
     return this;
   }
 
-  setAuthors(authors: Author[]): this {
-    this.book.authors = authors;
+  setAuthor(author: Author): this {
+    this.book.author = author;
     return this;
   }
 

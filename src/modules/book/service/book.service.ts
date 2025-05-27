@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from '../entity/book.entity';
 import { Repository } from 'typeorm';
-import { CreateBookDto } from '../dto/create-book.dto';
+import { BookDto } from '../dto/book.dto';
 import { Author } from '../../author/entity/author.entity';
-import { UpdateBookDto } from '../dto/update-book.dto';
 import { BookBuilder } from '../builder/book.builder';
 
 @Injectable()
@@ -17,33 +16,24 @@ export class BookService {
   ) {}
 
   findAll(): Promise<Book[]> {
-    return this.booksRepository.find({ relations: ['authors'] });
+    return this.booksRepository.find({ relations: ['author'] });
   }
 
   async findOne(id: number): Promise<Book | null> {
     return this.booksRepository.findOne({
       where: { id },
-      relations: ['authors'],
+      relations: ['author'],
     });
   }
 
-  async create(createBookDto: CreateBookDto): Promise<Book> {
-    const bookBuilder = new BookBuilder().setName(createBookDto.name);
-
-    // Parse authorIds if it's a string
-    let authorIds: number[] = [];
-    if (typeof createBookDto.authorIds === 'string') {
-      authorIds = createBookDto.authorIds
-        .split(',') // Split the string by commas
-        .map((id) => parseInt(id.trim(), 10)) // Trim whitespace and convert to numbers
-        .filter((id) => !isNaN(id)); // Filter out invalid numbers
-    } else if (Array.isArray(createBookDto.authorIds)) {
-      authorIds = createBookDto.authorIds;
-    }
-
-    if (authorIds.length > 0) {
-      const authors = await this.authorsRepository.findByIds(authorIds);
-      bookBuilder.setAuthors(authors);
+  async create(bookDto: BookDto): Promise<Book> {
+    const bookBuilder = new BookBuilder().setName(bookDto.name);
+    const authorId = Number(bookDto.authorId);
+    if (authorId) {
+      const author = await this.authorsRepository.findOneBy({
+        id: authorId,
+      });
+      if (author) bookBuilder.setAuthor(author);
     }
     const book = bookBuilder.getBook();
     return this.booksRepository.save(book);
@@ -53,10 +43,10 @@ export class BookService {
     await this.booksRepository.delete(id);
   }
 
-  async update(id: number, updateBookDto: UpdateBookDto): Promise<void> {
+  async update(id: number, bookDto: BookDto): Promise<void> {
     const book = await this.booksRepository.findOne({
       where: { id },
-      relations: ['authors'],
+      relations: ['author'],
     });
 
     if (!book) {
@@ -66,19 +56,20 @@ export class BookService {
     const bookBuilder = new BookBuilder()
       .setId(book.id)
       .setName(book.name)
-      .setAuthors(book.authors);
+      .setAuthor(book.author);
 
     // Update the book's properties
-    if (updateBookDto.name) {
-      bookBuilder.setName(updateBookDto.name);
+    if (bookDto.name) {
+      bookBuilder.setName(bookDto.name);
     }
 
-    // Update the authors if authorIds are provided
-    if (updateBookDto.authorIds && Array.isArray(updateBookDto.authorIds)) {
-      const authors = await this.authorsRepository.findByIds(
-        updateBookDto.authorIds,
-      );
-      book.authors = authors;
+    // Update the authors if authorId are provided
+    const authorId = Number(bookDto.authorId);
+    if (authorId) {
+      const author = await this.authorsRepository.findOneBy({
+        id: authorId,
+      });
+      if (author) bookBuilder.setAuthor(author);
     }
 
     await this.booksRepository.save(bookBuilder.getBook());

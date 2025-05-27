@@ -84,7 +84,7 @@ describe('BookService', () => {
   });
 
   it('create', async () => {
-    const book = await bookService.create({ name: 'Book 1', authorIds: '1' });
+    const book = await bookService.create({ name: 'Book 1', authorId: '1' });
     expect(book).toStrictEqual({
       id: 1,
       name: 'Book 1',
@@ -102,7 +102,7 @@ describe('BookService', () => {
     const repoSpy = jest.spyOn(bookRepository, 'save');
     await bookService.update(1, {
       name: 'Book 1',
-      authorIds: '1',
+      authorId: '1',
     });
     expect(repoSpy).toBeCalledWith({
       id: 1,

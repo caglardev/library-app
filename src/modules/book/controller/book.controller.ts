@@ -11,8 +11,7 @@ import {
 } from '@nestjs/common';
 import { BookService } from '../service/book.service';
 import { Book } from '../entity/book.entity';
-import { CreateBookDto } from '../dto/create-book.dto';
-import { UpdateBookDto } from '../dto/update-book.dto';
+import { BookDto } from '../dto/book.dto';
 
 @Controller('books')
 export class BookController {
@@ -35,9 +34,9 @@ export class BookController {
   //TODO add author validation.
   //TODO move validation to service layer.
   @Post()
-  create(@Body() createBookDto: CreateBookDto): Promise<Book> {
-    if (createBookDto?.name !== undefined && createBookDto?.name !== '') {
-      return this.bookService.create(createBookDto);
+  create(@Body() bookDto: BookDto): Promise<Book> {
+    if (bookDto.name && bookDto.authorId) {
+      return this.bookService.create(bookDto);
     }
     throw new HttpException('bad request', HttpStatus.BAD_REQUEST);
   }
@@ -47,36 +46,14 @@ export class BookController {
     return this.bookService.remove(id);
   }
 
-  //TODO move validation to service layer.
   @Put(':id')
   async update(
     @Param('id') id: number,
-    @Body() updateBookDto: UpdateBookDto,
+    @Body() bookDto: BookDto,
   ): Promise<void> {
-    // Parse authorIds if it's a string
-    if (typeof updateBookDto.authorIds === 'string') {
-      updateBookDto.authorIds = updateBookDto.authorIds
-        .split(',') // Split the string by commas
-        .map((id) => parseInt(id.trim(), 10)) // Trim whitespace and convert to numbers
-        .filter((id) => !isNaN(id)); // Filter out invalid numbers
-    }
-
-    // Validate the request body
-    if (
-      (updateBookDto?.name === undefined || updateBookDto?.name === '') &&
-      (updateBookDto?.authorIds === undefined ||
-        !Array.isArray(updateBookDto.authorIds))
-    ) {
-      throw new HttpException(
-        'No valid fields to update',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     try {
-      await this.bookService.update(id, updateBookDto);
+      await this.bookService.update(id, bookDto);
     } catch (error) {
-      // Handle specific errors if needed
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.message === 'Book not found') {
         throw new HttpException('Book not found', HttpStatus.NOT_FOUND);

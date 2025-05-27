@@ -28,7 +28,7 @@ describe('BookBuilder', () => {
       { id: 1, name: 'Author 1' },
       { id: 2, name: 'Author 2' },
     ];
-    const book = bookBuilder.setAuthors(authors).getBook();
+    const book = bookBuilder.setAuthor(authors).getBook();
     expect(book.authors).toEqual(authors);
   });
 
@@ -42,7 +42,7 @@ describe('BookBuilder', () => {
     const book = bookBuilder
       .setId(1)
       .setName('Test Book')
-      .setAuthors(authors)
+      .setAuthor(authors)
       .getBook();
 
     expect(book.id).toBe(1);

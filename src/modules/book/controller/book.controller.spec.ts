@@ -3,11 +3,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookController } from './book.controller';
 import { BookService } from '../service/book.service';
-import { CreateBookDto } from '../dto/create-book.dto';
+import { BookDto } from '../dto/book.dto';
 
-const createBookDto: CreateBookDto = {
+const createBookDto: BookDto = {
   name: 'book 1',
-  authorIds: '1',
+  authorId: '1',
 };
 
 //TODO: add tests for edge cases.
@@ -53,7 +53,7 @@ describe('Books Controller', () => {
             ),
             create: jest
               .fn()
-              .mockImplementation((createBookDto: CreateBookDto) =>
+              .mockImplementation((createBookDto: BookDto) =>
                 Promise.resolve({ id: '1', ...createBookDto }),
               ),
             remove: jest.fn(),
