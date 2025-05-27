@@ -10,5 +10,5 @@ export class Author {
   name: string;
 
   @OneToOne(() => Book, (book) => book.author)
-  book: Book;
+  book?: Book;
 }
