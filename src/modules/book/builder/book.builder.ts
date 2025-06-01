@@ -1,5 +1,6 @@
 import { Book } from '../entity/book.entity';
 import { Author } from '../../author/entity/author.entity';
+import { ComicBook } from '../entity/book.entity';
 
 interface IBookBuilder {
   book: Book;
@@ -33,5 +34,12 @@ export class BookBuilder implements IBookBuilder {
 
   getBook(): Book {
     return this.book;
+  }
+}
+
+export class ComicBookBuilder extends BookBuilder {
+  setAmountOfPictures(amount: number): this {
+    (this.book as ComicBook).amountOfPictures = amount;
+    return this;
   }
 }

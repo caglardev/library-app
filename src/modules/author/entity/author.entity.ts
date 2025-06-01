@@ -1,5 +1,5 @@
 import { Book } from 'src/modules/book/entity/book.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Author {
@@ -8,7 +8,6 @@ export class Author {
 
   @Column()
   name: string;
-
-  @OneToOne(() => Book, (book) => book.author)
-  book?: Book;
+  @OneToMany(() => Book, (book) => book.author)
+  books: Book[];
 }

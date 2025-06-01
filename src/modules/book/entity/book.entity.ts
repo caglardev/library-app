@@ -2,12 +2,15 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
+  ManyToOne,
+  ChildEntity,
+  TableInheritance,
 } from 'typeorm';
 import { Author } from '../../author/entity/author.entity';
 
 @Entity()
+@TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class Book {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,7 +18,12 @@ export class Book {
   @Column()
   name: string;
 
-  @OneToOne(() => Author, (author) => author.book)
+  @ManyToOne(() => Author, (author) => author.books)
   @JoinColumn()
   author: Author;
+}
+@ChildEntity()
+export class ComicBook extends Book {
+  @Column()
+  amountOfPictures: number;
 }
