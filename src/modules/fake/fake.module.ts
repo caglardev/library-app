@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Author } from '../author/entity/author.entity';
 import { Book, ComicBook } from '../book/entity/book.entity';
 
+//TODO unit tests.
 @Module({
   imports: [TypeOrmModule.forFeature([Author, Book, ComicBook])],
   controllers: [FakeController],

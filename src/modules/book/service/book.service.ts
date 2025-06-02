@@ -81,12 +81,10 @@ export class BookService {
         .setAuthor(book.author);
     }
 
-    // Update the book's properties
     if (bookDto.name) {
       bookBuilder.setName(bookDto.name);
     }
 
-    // Update the authors if authorId is provided
     const authorId = Number(bookDto.authorId);
     if (authorId) {
       const author = await this.authorsRepository.findOneBy({

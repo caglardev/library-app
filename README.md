@@ -7,9 +7,13 @@ It is a simple library API.
 ```bash
 /books
 /books/:id
+/search/book?query=test
 ```
 
 for POST and PUT methods choose x-www-form-urlencoded as body type and add name/authorId/amounOfPictures fields.
+
+to DELETE make a request to /books/:id endpoint.
+
 check books.controller.ts for more insight.
 
 ## Project setup
@@ -69,3 +73,5 @@ DB_USER =
 DB_PASSWORD =
 DB_NAME =
 ```
+
+TODO: unit tests

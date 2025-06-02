@@ -38,8 +38,8 @@ export class BookBuilder implements IBookBuilder {
 }
 
 export class ComicBookBuilder extends BookBuilder {
-  setAmountOfPictures(amount: number): this {
-    (this.book as ComicBook).amountOfPictures = amount;
+  setAmountOfPictures(amountOfPictures: number): this {
+    (this.book as ComicBook).amountOfPictures = amountOfPictures;
     return this;
   }
 }

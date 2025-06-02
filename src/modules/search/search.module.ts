@@ -6,6 +6,7 @@ import { Book } from '../book/entity/book.entity';
 import { SearchController } from './controller/search.controller';
 import { SearchService } from './service/search.service';
 
+//TODO unit tests.
 @Module({
   imports: [TypeOrmModule.forFeature([Book, Author])],
   controllers: [SearchController],
