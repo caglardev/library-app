@@ -9,7 +9,7 @@ It is a simple library API.
 /books/:id
 ```
 
-for POST and PUT methods choose x-www-form-urlencoded as body type and add name/authorIds fields.
+for POST and PUT methods choose x-www-form-urlencoded as body type and add name/authorId/amounOfPictures fields.
 check books.controller.ts for more insight.
 
 ## Project setup
@@ -57,7 +57,7 @@ $ npm run start:dev
 ```
 
 command starts a database (defined in docker-compose.yml) and thanks to typeorm packet tables are automatically created.
-You can insert some data manually (example init/create-tables.sql).
+Make a request to http://localhost:3000/create-fake-data to add fake books, comic books and authors.
 
 ## env
 
