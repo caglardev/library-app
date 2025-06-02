@@ -6,6 +6,7 @@ import { Author } from './modules/author/entity/author.entity';
 import { BookModule } from './modules/book/book.module';
 import { AuthorModule } from './modules/author/author.module';
 import { SearchModule } from './modules/search/search.module';
+import { FakeModule } from './modules/fake/fake.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SearchModule } from './modules/search/search.module';
     BookModule,
     AuthorModule,
     SearchModule,
+    FakeModule,
   ],
 })
 export class AppModule {}
