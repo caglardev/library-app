@@ -31,25 +31,43 @@ export class BookService {
   async create(bookDto: BookDto): Promise<Book> {
     let bookBuilder: BookBuilder;
     if (bookDto.amountOfPictures) {
-      bookBuilder = new ComicBookBuilder()
-        .setName(bookDto.name)
-        .setAmountOfPictures(bookDto.amountOfPictures);
-    } else {
-      bookBuilder = new BookBuilder().setName(bookDto.name);
+      bookBuilder = new ComicBookBuilder();
+      const book = await this.getComicBook(
+        bookDto,
+        bookBuilder as ComicBookBuilder,
+      );
+      return this.comicBooksRepository.save(book);
     }
-    const authorId = Number(bookDto.authorId);
-    if (authorId) {
-      const author = await this.authorsRepository.findOneBy({
-        id: authorId,
-      });
-      if (author) bookBuilder.setAuthor(author);
-    }
+    bookBuilder = new BookBuilder().setName(bookDto.name);
+
+    const author = await this.getAuthor(bookDto.authorId);
+    if (author) bookBuilder.setAuthor(author);
+
     const book = bookBuilder.getBook();
-    if (bookDto.amountOfPictures) {
-      return this.comicBooksRepository.save(book as ComicBook);
-    } else {
-      return this.booksRepository.save(book);
-    }
+    return this.booksRepository.save(book);
+  }
+
+  private async getComicBook(
+    bookDto: BookDto,
+    bookBuilder: ComicBookBuilder,
+  ): Promise<ComicBook> {
+    bookBuilder
+      .setName(bookDto.name)
+      .setAmountOfPictures(bookDto.amountOfPictures!);
+    const author = await this.getAuthor(bookDto.authorId);
+    if (author) bookBuilder.setAuthor(author);
+    return bookBuilder.getBook() as ComicBook;
+  }
+
+  private async getAuthor(
+    authorId: string | undefined,
+  ): Promise<Author | null> {
+    if (!authorId) return null;
+    const id = Number(authorId);
+    const author = await this.authorsRepository.findOneBy({
+      id,
+    });
+    return author;
   }
 
   async remove(id: number): Promise<void> {
