@@ -9,6 +9,8 @@ import { SearchModule } from './modules/search/search.module';
 import { FakeModule } from './modules/fake/fake.module';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
+import { BorrowModule } from './modules/borrow/borrow.module';
+import { Borrow } from './modules/borrow/entity/borrow.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { User } from './modules/user/user.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Book, ComicBook, Author, User],
+      entities: [Book, ComicBook, Author, User, Borrow],
       synchronize: true,
     }),
     BookModule,
@@ -28,6 +30,7 @@ import { User } from './modules/user/user.entity';
     SearchModule,
     FakeModule,
     UserModule,
+    BorrowModule,
   ],
 })
 export class AppModule {}
