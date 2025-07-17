@@ -8,6 +8,9 @@ It is a simple library API.
 /books
 /books/:id
 /search/book?query=test
+/user/:id
+/user/:id/books
+/user/:id/books?from=YYYY-MM-DD&to=YYYY-MM-DD
 ```
 
 for POST and PUT methods choose x-www-form-urlencoded as body type and add name/authorId/amounOfPictures fields.

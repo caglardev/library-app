@@ -25,12 +25,16 @@ export class UserController {
   }
 
   // TODO add validation for the case: to param is before from param
+
   @Get(':id/books')
   async getBooksOfUserBetweenDates(
     @Param('id') id: number,
     @Query('from') from: string,
     @Query('to') to: string,
   ): Promise<Book[]> {
+    if (!from && !to) {
+      return await this.userService.getBooks(id);
+    }
     // Validate 'from' as a date in format YYYY-MM-DD
     if (from && !dateRegex.test(from)) {
       throw new HttpException(

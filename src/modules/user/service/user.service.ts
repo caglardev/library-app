@@ -15,18 +15,21 @@ export class UserService {
   ) {}
 
   async findOne(id: number): Promise<User | null> {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOne({
+      where: { id },
+      relations: ['borrows', 'borrows.book', 'borrows.book.author'],
+    });
+  }
+
+  async getBooks(id: number): Promise<Book[]> {
+    return (await this.getBorrows(id)).map((borrow) => borrow.book);
   }
 
   async getBooksOfUserBetweenDates(
     id: number,
     dates: { from: Date; to: Date },
   ): Promise<Book[]> {
-    const borrows = await this.borrowRepository.find({
-      where: { user: { id } },
-      relations: ['book', 'user', 'book.author'],
-    });
-    return borrows
+    return (await this.getBorrows(id))
       .filter((borrow) => {
         const borrowDate = borrow.borrowedAt.getTime();
         if (
@@ -40,5 +43,12 @@ export class UserService {
       .sort((a, b) => {
         return a.id - b.id;
       });
+  }
+
+  private async getBorrows(id: number): Promise<Borrow[]> {
+    return await this.borrowRepository.find({
+      where: { user: { id } },
+      relations: ['book', 'book.author'],
+    });
   }
 }
