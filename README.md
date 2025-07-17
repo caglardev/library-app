@@ -8,6 +8,7 @@ It is a simple library API.
 /books
 /books/:id
 /search/book?query=test
+/borrows
 /user/:id
 /user/:id/books
 /user/:id/books?from=YYYY-MM-DD&to=YYYY-MM-DD
