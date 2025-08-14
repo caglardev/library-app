@@ -11,6 +11,7 @@ import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
 import { BorrowModule } from './modules/borrow/borrow.module';
 import { Borrow } from './modules/borrow/entity/borrow.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { Borrow } from './modules/borrow/entity/borrow.entity';
     FakeModule,
     UserModule,
     BorrowModule,
+    CacheModule.register(),
   ],
 })
 export class AppModule {}

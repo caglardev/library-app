@@ -8,12 +8,15 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { BookService } from '../service/book.service';
 import { Book } from '../entity/book.entity';
 import { BookDto } from '../dto/book.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('books')
+@UseInterceptors(CacheInterceptor)
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
