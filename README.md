@@ -79,3 +79,11 @@ DB_NAME =
 ```
 
 TODO: unit tests
+
+## Some useful redis-cli commands
+
+```
+FLUSHDB ASYNC
+SCAN 0 MATCH * COUNT 100
+GET 1
+```
