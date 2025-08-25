@@ -11,6 +11,9 @@ import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
 import { BorrowModule } from './modules/borrow/borrow.module';
 import { Borrow } from './modules/borrow/entity/borrow.entity';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv, Keyv } from '@keyv/redis';
+import { CacheableMemory } from 'cacheable';
 
 @Module({
   imports: [
@@ -31,6 +34,19 @@ import { Borrow } from './modules/borrow/entity/borrow.entity';
     FakeModule,
     UserModule,
     BorrowModule,
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: () => {
+        return {
+          stores: [
+            new Keyv({
+              store: new CacheableMemory({ ttl: 10000, lruSize: 5000 }),
+            }),
+            createKeyv('redis://localhost:6379'),
+          ],
+        };
+      },
+    }),
   ],
 })
 export class AppModule {}
