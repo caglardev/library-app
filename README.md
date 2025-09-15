@@ -83,6 +83,7 @@ TODO: unit tests
 ## Some useful redis-cli commands
 
 ```
+docker exec -it <container id> redis-cli
 FLUSHDB ASYNC
 SCAN 0 MATCH * COUNT 100
 GET 1

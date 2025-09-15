@@ -25,7 +25,7 @@ export class BookService {
     if (url) {
       try {
         const response = await fetch(url);
-        return this.getParsedBooks(await response.json());
+        return this.parseBooks(await response.json());
       } catch {
         console.log('favorite books not fetched');
         return undefined;
@@ -142,7 +142,12 @@ export class BookService {
     return await this.cacheManager.get(key);
   }
 
-  getParsedBooks(json: any) {
+  async parseBooks(json: any): Promise<Book[]> {
+    const cached = await this.getCacheKey('favorites');
+    if (cached) {
+      const result = JSON.parse(cached) as Book[];
+      return result;
+    }
     const result: Book[] = [];
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const entries = json?.entries;
@@ -151,6 +156,9 @@ export class BookService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       bookBuilder.setName(entry?.title);
       result.push(bookBuilder.getBook());
+    }
+    if (result.length) {
+      await this.setCacheKey('favorites', JSON.stringify(result));
     }
     return result;
   }
