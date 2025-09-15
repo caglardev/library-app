@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book, ComicBook } from '../entity/book.entity';
 import { Repository } from 'typeorm';
@@ -10,8 +10,6 @@ import { Cache } from 'cache-manager';
 
 @Injectable()
 export class BookService {
-  private readonly logger = new Logger('BookServiceLogger');
-
   constructor(
     @InjectRepository(Book)
     private booksRepository: Repository<Book>,
@@ -21,6 +19,20 @@ export class BookService {
     private authorsRepository: Repository<Author>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
+
+  async getFavorites(): Promise<Book[] | undefined> {
+    const url = process.env.OPEN_LIBRARY_URL;
+    if (url) {
+      try {
+        const response = await fetch(url);
+        return this.getParsedBooks(await response.json());
+      } catch {
+        console.log('favorite books not fetched');
+        return undefined;
+      }
+    }
+    return [];
+  }
 
   findAll(): Promise<Book[]> {
     return this.booksRepository.find({ relations: ['author'] });
@@ -128,5 +140,18 @@ export class BookService {
 
   async getCacheKey(key: string): Promise<string | undefined> {
     return await this.cacheManager.get(key);
+  }
+
+  getParsedBooks(json: any) {
+    const result: Book[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+    const entries = json?.entries;
+    for (const entry of entries) {
+      const bookBuilder = new BookBuilder();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+      bookBuilder.setName(entry?.title);
+      result.push(bookBuilder.getBook());
+    }
+    return result;
   }
 }

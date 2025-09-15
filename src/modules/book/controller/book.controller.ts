@@ -22,6 +22,15 @@ export class BookController {
     return await this.bookService.findAll();
   }
 
+  @Get('favorites')
+  async getFavorites(): Promise<Book[] | undefined> {
+    const result = await this.bookService.getFavorites();
+    if (result) {
+      return result;
+    }
+    throw new HttpException('not found', HttpStatus.NOT_FOUND);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Book> {
     const result = await this.bookService.findOne(id);
