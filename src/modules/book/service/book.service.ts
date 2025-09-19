@@ -157,8 +157,11 @@ export class BookService {
     const entries = json?.entries;
     for (const entry of entries) {
       const bookBuilder = new BookBuilder();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-      bookBuilder.setName(entry?.title);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (entry?.title) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+        bookBuilder.setName(entry.title);
+      }
       result.push(bookBuilder.getBook());
     }
     return result;
