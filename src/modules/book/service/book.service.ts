@@ -21,11 +21,20 @@ export class BookService {
   ) {}
 
   async getFavorites(): Promise<Book[] | undefined> {
+    const cached = await this.getCacheKey('favorites');
+    if (cached) {
+      const result = JSON.parse(cached) as Book[];
+      return result;
+    }
     const url = process.env.OPEN_LIBRARY_URL;
     if (url) {
       try {
         const response = await fetch(url);
-        return this.parseBooks(await response.json());
+        const books = this.parseBooks(await response.json());
+        if (books.length) {
+          await this.setCacheKey('favorites', JSON.stringify(books));
+          return books;
+        }
       } catch {
         console.log('favorite books not fetched');
         return undefined;
@@ -142,12 +151,7 @@ export class BookService {
     return await this.cacheManager.get(key);
   }
 
-  async parseBooks(json: any): Promise<Book[]> {
-    const cached = await this.getCacheKey('favorites');
-    if (cached) {
-      const result = JSON.parse(cached) as Book[];
-      return result;
-    }
+  parseBooks(json: any): Book[] {
     const result: Book[] = [];
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const entries = json?.entries;
@@ -156,9 +160,6 @@ export class BookService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       bookBuilder.setName(entry?.title);
       result.push(bookBuilder.getBook());
-    }
-    if (result.length) {
-      await this.setCacheKey('favorites', JSON.stringify(result));
     }
     return result;
   }
