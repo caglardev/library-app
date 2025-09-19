@@ -14,12 +14,12 @@ describe('BookBuilder', () => {
   });
 
   it('should set id correctly', () => {
-    const book = bookBuilder.setId(1).getBook();
+    const book = bookBuilder.id(1).build();
     expect(book.id).toBe(1);
   });
 
   it('should set name correctly', () => {
-    const book = bookBuilder.setName('Test Book').getBook();
+    const book = bookBuilder.name('Test Book').build();
     expect(book.name).toBe('Test Book');
   });
 
@@ -28,22 +28,18 @@ describe('BookBuilder', () => {
       { id: 1, name: 'Author 1' },
       { id: 2, name: 'Author 2' },
     ];
-    const book = bookBuilder.setAuthor(authors).getBook();
+    const book = bookBuilder.author(authors).build();
     expect(book.authors).toEqual(authors);
   });
 
   it('should return a Book instance', () => {
-    const book = bookBuilder.getBook();
+    const book = bookBuilder.build();
     expect(book).toBeInstanceOf(Book);
   });
 
   it('should allow method chaining', () => {
     const authors: Author[] = [{ id: 1, name: 'Author 1' }];
-    const book = bookBuilder
-      .setId(1)
-      .setName('Test Book')
-      .setAuthor(authors)
-      .getBook();
+    const book = bookBuilder.id(1).name('Test Book').author(authors).build();
 
     expect(book.id).toBe(1);
     expect(book.name).toBe('Test Book');

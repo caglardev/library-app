@@ -39,9 +39,9 @@ export class FakeController {
     // Create 1000 books and link them to authors
     const books = Array.from({ length: 1000 }).map(() => {
       const book = new BookBuilder()
-        .setName(faker.lorem.words(3))
-        .setAuthor(faker.helpers.arrayElement(authors))
-        .getBook();
+        .name(faker.lorem.words(3))
+        .author(faker.helpers.arrayElement(authors))
+        .build();
       return book;
     });
 
@@ -56,10 +56,10 @@ export class FakeController {
     // Create 500 comic books and link them to authors
     const comicBooks = Array.from({ length: 500 }).map(() => {
       const comicBook = new ComicBookBuilder()
-        .setName(faker.lorem.words(3))
+        .name(faker.lorem.words(3))
         .setAmountOfPictures(faker.number.int({ min: 10, max: 100 }))
-        .setAuthor(faker.helpers.arrayElement(authors))
-        .getBook();
+        .author(faker.helpers.arrayElement(authors))
+        .build();
       return comicBook;
     });
 

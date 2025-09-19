@@ -73,12 +73,12 @@ export class BookService {
       );
       return this.comicBooksRepository.save(book);
     }
-    bookBuilder = new BookBuilder().setName(bookDto.name);
+    bookBuilder = new BookBuilder().name(bookDto.name);
 
     const author = await this.getAuthor(bookDto.authorId);
-    if (author) bookBuilder.setAuthor(author);
+    if (author) bookBuilder.author(author);
 
-    const book = bookBuilder.getBook();
+    const book = bookBuilder.build();
     return this.booksRepository.save(book);
   }
 
@@ -107,16 +107,16 @@ export class BookService {
       return;
     }
 
-    bookBuilder = new BookBuilder().setId(book.id).setAuthor(book.author);
+    bookBuilder = new BookBuilder().id(book.id).author(book.author);
 
     if (bookDto.name) {
-      bookBuilder.setName(bookDto.name);
+      bookBuilder.name(bookDto.name);
     }
 
     const author = await this.getAuthor(bookDto.authorId);
-    if (author) bookBuilder.setAuthor(author);
+    if (author) bookBuilder.author(author);
 
-    const updatedBook = bookBuilder.getBook();
+    const updatedBook = bookBuilder.build();
     await this.booksRepository.save(updatedBook);
   }
 
@@ -125,11 +125,11 @@ export class BookService {
     bookBuilder: ComicBookBuilder,
   ): Promise<ComicBook> {
     bookBuilder
-      .setName(bookDto.name)
+      .name(bookDto.name)
       .setAmountOfPictures(bookDto.amountOfPictures!);
     const author = await this.getAuthor(bookDto.authorId);
-    if (author) bookBuilder.setAuthor(author);
-    return bookBuilder.getBook() as ComicBook;
+    if (author) bookBuilder.author(author);
+    return bookBuilder.build() as ComicBook;
   }
 
   private async getAuthor(
@@ -156,13 +156,11 @@ export class BookService {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
     const entries = json?.entries;
     for (const entry of entries) {
-      const bookBuilder = new BookBuilder();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (entry?.title) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        bookBuilder.setName(entry.title);
+        result.push(new BookBuilder().name(entry.title).build());
       }
-      result.push(bookBuilder.getBook());
     }
     return result;
   }

@@ -4,10 +4,10 @@ import { ComicBook } from '../entity/book.entity';
 
 interface IBookBuilder {
   book: Book;
-  setId(id: number): this;
-  setName(name: string): this;
-  setAuthor(author: Author): this;
-  getBook(): Book;
+  id(id: number): this;
+  name(name: string): this;
+  author(author: Author): this;
+  build(): Book;
 }
 
 export class BookBuilder implements IBookBuilder {
@@ -17,22 +17,22 @@ export class BookBuilder implements IBookBuilder {
     this.book = new Book();
   }
 
-  setId(id: number): this {
+  id(id: number): this {
     this.book.id = id;
     return this;
   }
 
-  setName(name: string): this {
+  name(name: string): this {
     this.book.name = name;
     return this;
   }
 
-  setAuthor(author: Author): this {
+  author(author: Author): this {
     this.book.author = author;
     return this;
   }
 
-  getBook(): Book {
+  build(): Book {
     return this.book;
   }
 }
