@@ -8,6 +8,7 @@ import { BookBuilder, ComicBookBuilder } from '../builder/book.builder';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
+const FAVORITES_KEY = 'favorites';
 @Injectable()
 export class BookService {
   constructor(
@@ -21,10 +22,10 @@ export class BookService {
   ) {}
 
   async getFavorites(): Promise<Book[] | undefined> {
-    const cached = await this.getCacheKey('favorites');
+    const cached = await this.getCacheKey(FAVORITES_KEY);
     if (cached) {
-      const result = JSON.parse(cached) as Book[];
-      return result;
+      // FIXME get rid of type assertion
+      return JSON.parse(cached) as Book[];
     }
     const url = process.env.OPEN_LIBRARY_URL;
     if (url) {
@@ -32,7 +33,7 @@ export class BookService {
         const response = await fetch(url);
         const books = this.parseBooks(await response.json());
         if (books.length) {
-          await this.setCacheKey('favorites', JSON.stringify(books));
+          await this.setCacheKey(FAVORITES_KEY, JSON.stringify(books));
           return books;
         }
       } catch {
